@@ -1,0 +1,91 @@
+ {
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": null,
+            "minLength": 3,
+            "maxLength": 24,
+            "metadata": {
+                "description": "The name of the storage account."
+            }
+        },
+        "storageAccountReplication": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Storage Account type"
+            }
+        },
+        "storageAccountPerformance": {
+            "type": "string",
+            "defaultValue": "Standard",
+            "allowedValues": [
+                "Standard",
+                "Premium"
+            ],
+            "metadata": {
+                "description": "Storage Account Performance"
+            }
+        },
+        "storageAccountKind": {
+            "type": "string",
+            "defaultValue": "Storagev2",
+            "allowedValues": [
+                "Storagev2",
+                "Storage",
+                "Blob"
+            ],
+            "metadata": {
+                "description": "Storage Account Performance"
+            }
+        },
+        "SasToken": {
+            "type": "securestring"
+        }
+    },
+    "variables": {
+        "nestedTemplates": {
+            "storageTemplateUrl":"https://lbtemplatedeploy.blob.core.windows.net/azuretemplate/storage_account/Template_Storagev2.json"
+        }
+    },
+    "resources": [
+        {
+            "name": "storageDeployment",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('nestedTemplates').storageTemplateUrl, parameters('SasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]"
+                    },
+                    "storageAccountReplication": {
+                        "value": "[parameters('storageAccountReplication')]"
+                    },
+                    "storageAccountPerformance": {
+                        "value": "[parameters('storageAccountPerformance')]"
+                    },
+                    "storageAccountKind": {
+                        "value": "[parameters('storageAccountKind')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        
+    }
+}
