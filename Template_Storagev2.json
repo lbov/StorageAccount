@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": null,
+            "minLength": 3,
+            "maxLength": 24,
+            "metadata": {
+                "description": "The name of the storage account."
+            }
+        },
+        "storageAccountReplication": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ]
+        },
+        "storageAccountPerformance": {
+            "type": "string",
+            "defaultValue": "Standard",
+            "allowedValues": [
+                "Standard",
+                "Premium"
+            ]
+        },
+        "storageAccountKind": {
+            "type": "string",
+            "defaultValue": "Storagev2",
+            "allowedValues": [
+                "Storagev2",
+                "Storage",
+                "Blob"
+            ]
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-10-01",  
+            "name": "[parameters('storageAccountName')]",         
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "[parameters('storageAccountReplication')]",
+                "tier": "[parameters('storageAccountPerformance')]"
+            },
+            "kind": "[parameters('storageAccountKind')]",
+            "location": "[resourceGroup().location]",
+            "tags": {}
+        }
+    ]
+}
